@@ -10,6 +10,14 @@ const expressLayouts = require('express-ejs-layouts');
 
 const db = require('./config/mongoose');
 
+//used for session cookie
+const session = require('express-session');
+const passport = require('passport');
+const passportLocal = require('./config/passport-local-strategy');
+
+//using mongo store as persistent storage of session cookies
+const mongoStore = require('connect-mongo')(session);
+
 //handling post request data and cookies
 app.use(express.urlencoded());
 app.use(cookieParser());
@@ -25,6 +33,34 @@ app.use(express.static('./assets'));
 //set up view engine and path to views
 app.set('view engine', 'ejs');
 app.set('views', './views');
+
+
+//set up for session cookies using passport and express-session
+app.use(session({
+    
+    name: 'Tanpark',
+    secret: 'mynameistanuja', // TODO change the secret before deploying in production mode,
+    saveUninitialized: false,
+    resave: false,
+    cookie:{
+        maxAge: (1000*60*100)
+    },
+
+    //set when mongo store is installed for persistence storage of session cookies
+    store: new mongoStore({
+        mongooseConnection : db,
+        autoRemove: 'disabled'
+    },
+    function(err)
+    {
+        console.log(err || 'connection to mongo-db set up ok');
+    })
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(passport.setAuthenticatedUser);
 
 //use express route
 app.use('/',require('./routes'));

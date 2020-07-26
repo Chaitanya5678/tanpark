@@ -10,6 +10,7 @@ const expressLayouts = require('express-ejs-layouts');
 
 const db = require('./config/mongoose');
 
+//handling post request data and cookies
 app.use(express.urlencoded());
 app.use(cookieParser());
 

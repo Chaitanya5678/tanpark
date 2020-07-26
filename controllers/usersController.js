@@ -1,5 +1,5 @@
 
-const User = require('../models/user');
+const User = require('../models/user'); // Created when create controller is created
 
 module.exports.profile = function(req,res){
     return res.render('user_profile', {

@@ -6,6 +6,8 @@ const app = express();
 
 const expressLayouts = require('express-ejs-layouts');
 
+const db = require('./config/mongoose');
+
 //extract styles and scripts from subpages into layout
 app.use(expressLayouts);
 app.set('layout extractStyles', true);

@@ -10,7 +10,11 @@
         <a href="/"><p>&nbsp;Home</p></a>
     </div>
 
-    <div class="footer-op2">
-        <a href="/users/profile"><p>&nbsp;Profile</p></a>        
+    <div class="footer-op2">        
+        <% if(locals.user){  %> 
+
+            <a href="/users/profile/<%= user.id %>"><p>&nbsp;Profile</p></a>
+
+        <% } %> 
     </div>
 </div>

@@ -2,16 +2,44 @@
 const User = require('../models/user'); // Created when create controller is created
 
 module.exports.profile = function(req,res){
-    return res.render('user_profile', {
-        title : 'Tan Park | Profile'
+
+    User.findById(req.params.id, function(err,user){
+
+        return res.render('user_profile', {
+            title : 'Tan Park | Profile',
+            profile_user: user
+        });
+
+
     });
+    
+}
+
+module.exports.update = function(req,res)
+{
+    if(req.user.id == req.params.id)
+    {
+        User.findByIdAndUpdate(req.params.id, req.body, function(err,user)
+        {
+            if(err)
+            {
+                console.log('Error in updating user profile');
+                return;
+            }
+
+            return res.redirect('back');
+        });
+    }
+    else{
+        return res.status(401).send('Unauthorised');
+    }
 }
 
 module.exports.signUp = function(req,res){
 
     if(req.isAuthenticated())
     {
-        return res.redirect('/users/profile');
+        return res.redirect('/');
     }
 
     return res.render('user_sign_up', {
@@ -23,7 +51,7 @@ module.exports.signIn = function(req,res){
 
     if(req.isAuthenticated())
     {
-        return res.redirect('/users/profile');
+        return res.redirect('/');
     }
 
     return res.render('user_sign_in', {
@@ -50,6 +78,9 @@ module.exports.create = function(req, res)
                 return;}
             });
 
+            req.flash('success', 'Sign Up Successful');
+
+
             return res.redirect('/users/sign-in');
         }
         else{
@@ -62,11 +93,16 @@ module.exports.create = function(req, res)
 
 module.exports.createSession = function(req,res)
 {
-    return res.redirect('/users/profile');    
+    req.flash('success', 'Signed In Successfully');
+
+    return res.redirect('/');    
 }
 
 module.exports.destroySession = function(req,res)
 {
     req.logout();
+
+    req.flash('success', 'You have logged out!');
+
     return res.redirect('/');
 }
